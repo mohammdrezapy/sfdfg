@@ -1,0 +1,1419 @@
+```html
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mohammadrezapy | 3D Web Developer</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#020509;
+  --bg2:#061016;
+  --cyan:#00ffe1;
+  --blue:#00aaff;
+  --purple:#8b5cf6;
+  --text:#edffff;
+  --muted:#7e989d;
+  --glass:rgba(5,18,24,.58);
+  --border:rgba(0,255,225,.18);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  scroll-behavior:smooth;
+}
+
+html{
+  background:var(--bg);
+}
+
+body{
+  font-family:"Vazirmatn",sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(0,255,225,.07),transparent 28%),
+    radial-gradient(circle at 85% 70%,rgba(139,92,246,.08),transparent 30%),
+    var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* ================= CURSOR ================= */
+
+.cursor{
+  width:8px;
+  height:8px;
+  position:fixed;
+  background:var(--cyan);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9999;
+  box-shadow:0 0 20px var(--cyan);
+  transform:translate(-50%,-50%);
+}
+
+.cursor-ring{
+  width:38px;
+  height:38px;
+  border:1px solid rgba(0,255,225,.55);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s;
+}
+
+/* ================= BACKGROUND ================= */
+
+#space{
+  position:fixed;
+  inset:0;
+  z-index:-5;
+}
+
+.noise{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+}
+
+.scanlines{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:90;
+  opacity:.035;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(255,255,255,.15) 4px
+  );
+}
+
+/* ================= NAV ================= */
+
+nav{
+  position:fixed;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(1150px,calc(100% - 28px));
+  height:64px;
+  padding:0 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:1000;
+
+  background:rgba(2,8,12,.65);
+  backdrop-filter:blur(22px);
+  border:1px solid var(--border);
+  border-radius:18px;
+
+  box-shadow:
+    0 10px 50px rgba(0,0,0,.35),
+    inset 0 0 25px rgba(0,255,225,.025);
+}
+
+.logo{
+  direction:ltr;
+  font-family:Orbitron,sans-serif;
+  font-weight:800;
+  color:var(--cyan);
+  letter-spacing:1px;
+  text-shadow:0 0 18px rgba(0,255,225,.5);
+}
+
+.logo::before{
+  content:"// ";
+  color:var(--purple);
+}
+
+nav ul{
+  display:flex;
+  gap:27px;
+  list-style:none;
+}
+
+nav a{
+  color:#a8c0c4;
+  text-decoration:none;
+  font-size:13px;
+  transition:.3s;
+}
+
+nav a:hover{
+  color:var(--cyan);
+  text-shadow:0 0 15px var(--cyan);
+}
+
+/* ================= COMMON ================= */
+
+section{
+  width:min(1150px,calc(100% - 30px));
+  margin:auto;
+  padding:130px 0;
+}
+
+.section-label{
+  color:var(--cyan);
+  font-family:Orbitron,sans-serif;
+  font-size:11px;
+  letter-spacing:4px;
+  direction:ltr;
+  margin-bottom:13px;
+}
+
+.section-title{
+  margin-bottom:65px;
+}
+
+.section-title h2{
+  font-size:clamp(32px,5vw,55px);
+  font-weight:800;
+}
+
+.glass{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0,255,225,.055),
+      rgba(7,18,25,.65)
+    );
+  border:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  box-shadow:
+    inset 0 0 30px rgba(0,255,225,.018),
+    0 20px 70px rgba(0,0,0,.25);
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+  padding-top:120px;
+}
+
+.hero-content{
+  position:relative;
+  z-index:4;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  padding:8px 15px;
+  border:1px solid rgba(0,255,225,.22);
+  border-radius:100px;
+  color:var(--cyan);
+  background:rgba(0,255,225,.035);
+  font-size:12px;
+  margin-bottom:28px;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 15px var(--cyan);
+  animation:pulse 1.4s infinite;
+}
+
+@keyframes pulse{
+  50%{opacity:.3;transform:scale(.55)}
+}
+
+.hero h1{
+  direction:ltr;
+  font-family:Orbitron,sans-serif;
+  font-size:clamp(45px,9vw,105px);
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-4px;
+
+  background:linear-gradient(
+    90deg,
+    #fff,
+    var(--cyan),
+    var(--blue),
+    var(--purple),
+    #fff
+  );
+  background-size:400%;
+  -webkit-background-clip:text;
+  color:transparent;
+
+  animation:gradient 8s linear infinite;
+
+  filter:drop-shadow(0 0 35px rgba(0,255,225,.15));
+}
+
+@keyframes gradient{
+  to{background-position:400%}
+}
+
+.glitch{
+  position:relative;
+}
+
+.glitch::before,
+.glitch::after{
+  content:attr(data-text);
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.glitch::before{
+  color:var(--cyan);
+  transform:translate(2px,0);
+  clip-path:polygon(0 15%,100% 15%,100% 35%,0 35%);
+  opacity:.5;
+  animation:glitch1 3s infinite;
+}
+
+.glitch::after{
+  color:var(--purple);
+  transform:translate(-2px,0);
+  clip-path:polygon(0 65%,100% 65%,100% 82%,0 82%);
+  opacity:.45;
+  animation:glitch2 2.5s infinite;
+}
+
+@keyframes glitch1{
+  0%,90%,100%{transform:translate(0)}
+  92%{transform:translate(7px,-2px)}
+  94%{transform:translate(-5px,2px)}
+}
+
+@keyframes glitch2{
+  0%,88%,100%{transform:translate(0)}
+  90%{transform:translate(-6px,2px)}
+  93%{transform:translate(4px,-2px)}
+}
+
+.hero-sub{
+  margin-top:25px;
+  font-size:clamp(18px,3vw,29px);
+  color:#b9ced1;
+}
+
+.hero-sub strong{
+  color:var(--cyan);
+}
+
+.hero-description{
+  max-width:650px;
+  margin:22px auto;
+  color:var(--muted);
+  line-height:2;
+  font-size:14px;
+}
+
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:13px;
+  flex-wrap:wrap;
+  margin-top:30px;
+}
+
+.btn{
+  position:relative;
+  padding:13px 25px;
+  border-radius:12px;
+  text-decoration:none;
+  font-size:13px;
+  transition:.3s;
+  overflow:hidden;
+}
+
+.btn-primary{
+  background:var(--cyan);
+  color:#00110e;
+  font-weight:800;
+  box-shadow:0 0 30px rgba(0,255,225,.15);
+}
+
+.btn-primary:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 45px rgba(0,255,225,.4);
+}
+
+.btn-outline{
+  color:var(--cyan);
+  border:1px solid rgba(0,255,225,.3);
+  background:rgba(0,255,225,.035);
+}
+
+.btn-outline:hover{
+  background:rgba(0,255,225,.09);
+  transform:translateY(-5px);
+}
+
+/* ================= HUD ================= */
+
+.hud{
+  position:absolute;
+  z-index:3;
+  width:145px;
+  padding:13px;
+  border:1px solid rgba(0,255,225,.14);
+  background:rgba(0,10,15,.35);
+  backdrop-filter:blur(10px);
+  color:#5f777b;
+  font:9px Orbitron,sans-serif;
+  text-align:left;
+  direction:ltr;
+}
+
+.hud.one{
+  left:3%;
+  top:35%;
+}
+
+.hud.two{
+  right:3%;
+  bottom:25%;
+}
+
+.hud span{
+  color:var(--cyan);
+}
+
+/* ================= ABOUT ================= */
+
+.about-grid{
+  display:grid;
+  grid-template-columns:.8fr 1.4fr;
+  gap:22px;
+}
+
+.card{
+  border-radius:24px;
+  padding:30px;
+  transition:.4s;
+}
+
+.card:hover{
+  transform:translateY(-7px);
+  border-color:rgba(0,255,225,.38);
+  box-shadow:0 25px 80px rgba(0,255,225,.07);
+}
+
+.avatar-card{
+  min-height:360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.avatar{
+  width:175px;
+  height:175px;
+  border-radius:50%;
+  position:relative;
+
+  background:
+    radial-gradient(
+      circle at 35% 28%,
+      #fff 0 3%,
+      var(--cyan) 8%,
+      #007a78 28%,
+      #031317 63%,
+      #000 75%
+    );
+
+  box-shadow:
+    0 0 35px rgba(0,255,225,.45),
+    0 0 100px rgba(0,255,225,.13);
+
+  animation:float 5s ease-in-out infinite;
+}
+
+.avatar:before,
+.avatar:after{
+  content:"";
+  position:absolute;
+  inset:-35px;
+  border:1px solid rgba(0,255,225,.4);
+  border-radius:50%;
+  transform:rotate(25deg);
+}
+
+.avatar:after{
+  transform:rotate(-25deg);
+  border-color:rgba(139,92,246,.4);
+}
+
+@keyframes float{
+  50%{transform:translateY(-15px) rotate(5deg)}
+}
+
+.about h3{
+  font-size:25px;
+  color:var(--cyan);
+  margin-bottom:18px;
+}
+
+.about p{
+  color:var(--muted);
+  line-height:2.1;
+  font-size:14px;
+}
+
+.info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:25px;
+}
+
+.info div{
+  padding:12px;
+  border-right:2px solid var(--cyan);
+  background:rgba(255,255,255,.018);
+  font-size:12px;
+  color:#9ab0b4;
+}
+
+.info span{
+  color:var(--cyan);
+}
+
+/* ================= SKILLS ================= */
+
+.skills{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:17px;
+}
+
+.skill{
+  min-height:180px;
+  position:relative;
+  overflow:hidden;
+}
+
+.skill-icon{
+  font-size:34px;
+  margin-bottom:16px;
+  filter:drop-shadow(0 0 15px rgba(0,255,225,.35));
+}
+
+.skill h3{
+  font-family:Orbitron,sans-serif;
+  font-size:15px;
+  direction:ltr;
+  text-align:right;
+}
+
+.skill p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:8px;
+}
+
+.skill:after{
+  content:"";
+  position:absolute;
+  width:100px;
+  height:100px;
+  background:var(--cyan);
+  filter:blur(70px);
+  opacity:.05;
+  bottom:-50px;
+  left:-30px;
+}
+
+/* ================= PROJECTS ================= */
+
+.projects{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.project{
+  min-height:310px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+
+.project-number{
+  position:absolute;
+  top:23px;
+  right:23px;
+  color:var(--cyan);
+  font:12px Orbitron,sans-serif;
+  direction:ltr;
+}
+
+.project-orb{
+  position:absolute;
+  width:170px;
+  height:170px;
+  top:45px;
+  left:50%;
+  transform:translateX(-50%);
+  border-radius:50%;
+
+  background:
+    radial-gradient(circle at 35% 30%,#fff,var(--cyan) 4%,#07575b 20%,#020609 62%);
+
+  box-shadow:
+    0 0 35px rgba(0,255,225,.2),
+    inset 0 0 30px rgba(0,255,225,.3);
+
+  animation:projectFloat 4s ease-in-out infinite;
+}
+
+.project-orb:before{
+  content:"";
+  position:absolute;
+  inset:-20px;
+  border:1px solid rgba(0,255,225,.3);
+  border-radius:50%;
+  transform:rotate(30deg);
+}
+
+@keyframes projectFloat{
+  50%{transform:translate(-50%,-12px)}
+}
+
+.project h3{
+  position:relative;
+  z-index:2;
+  margin-bottom:9px;
+}
+
+.project p{
+  position:relative;
+  z-index:2;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.9;
+}
+
+/* ================= CONTACT ================= */
+
+.contact{
+  text-align:center;
+  padding:75px 20px;
+  position:relative;
+  overflow:hidden;
+}
+
+.contact h2{
+  font-size:clamp(30px,5vw,55px);
+  margin-bottom:15px;
+}
+
+.contact h2 span{
+  color:var(--cyan);
+}
+
+.contact p{
+  color:var(--muted);
+  margin-bottom:28px;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+  padding:35px;
+  border-top:1px solid rgba(255,255,255,.05);
+  text-align:center;
+  color:#52686d;
+  font-size:11px;
+}
+
+footer strong{
+  color:var(--cyan);
+  font-family:Orbitron,sans-serif;
+  direction:ltr;
+  display:inline-block;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:850px){
+
+  nav ul{
+    display:none;
+  }
+
+  .about-grid{
+    grid-template-columns:1fr;
+  }
+
+  .skills,
+  .projects{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hud{
+    display:none;
+  }
+}
+
+@media(max-width:550px){
+
+  section{
+    padding:90px 0;
+  }
+
+  .skills,
+  .projects{
+    grid-template-columns:1fr;
+  }
+
+  .info{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    letter-spacing:-2px;
+  }
+
+  .cursor,
+  .cursor-ring{
+    display:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="space"></div>
+<div class="noise"></div>
+<div class="scanlines"></div>
+
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+
+
+<!-- ================= NAV ================= -->
+
+<nav>
+
+  <div class="logo">
+    Mohammadrezapy
+  </div>
+
+  <ul>
+    <li><a href="#home">HOME</a></li>
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#skills">SKILLS</a></li>
+    <li><a href="#projects">PROJECTS</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+
+</nav>
+
+
+<main>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+  <div class="hud one">
+    SYSTEM: <span>ONLINE</span><br><br>
+    USER: MOHAMMADREZAPY<br><br>
+    STATUS: <span>CODING</span>
+  </div>
+
+  <div class="hud two">
+    EXPERIENCE: <span>04+</span><br><br>
+    AGE: <span>16</span><br><br>
+    MODE: <span>FREELANCE</span>
+  </div>
+
+  <div class="hero-content">
+
+    <div class="status">
+      <span class="status-dot"></span>
+      AVAILABLE FOR NEW PROJECTS
+    </div>
+
+    <h1
+      class="glitch"
+      data-text="Mohammadrezapy"
+    >
+      Mohammadrezapy
+    </h1>
+
+    <div class="hero-sub">
+      <strong>Freelance</strong>
+      Web Developer & Programmer
+    </div>
+
+    <p class="hero-description">
+      توسعه‌دهنده وب و برنامه‌نویس فریلنسر با ۴ سال تجربه
+      در طراحی وب، عاشق تکنولوژی، برنامه‌نویسی و ساخت
+      تجربه‌های دیجیتال مدرن.
+    </p>
+
+    <div class="buttons">
+
+      <a href="#projects" class="btn btn-primary">
+        مشاهده پروژه‌ها
+      </a>
+
+      <a href="#about" class="btn btn-outline">
+        درباره من
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section id="about">
+
+  <div class="section-title">
+
+    <div class="section-label">
+      01 / ABOUT
+    </div>
+
+    <h2>درباره من</h2>
+
+  </div>
+
+  <div class="about-grid">
+
+    <div class="glass card avatar-card">
+
+      <div class="avatar"></div>
+
+    </div>
+
+    <div class="glass card about">
+
+      <h3>سلام، من محمدرضا هستم 👋</h3>
+
+      <p>
+        من یک فریلنسر و توسعه‌دهنده وب هستم.
+        16 سال دارم و اهل عجب‌شیر هستم.
+        حدود ۴ سال است که در زمینه طراحی و توسعه وب
+        فعالیت می‌کنم.
+      </p>
+
+      <p style="margin-top:15px">
+        در کنار برنامه‌نویسی، در مدرسه تیزهوشان تحصیل می‌کنم
+        و علاقه زیادی به تکنولوژی، طراحی، برنامه‌نویسی
+        و ساخت پروژه‌های خلاقانه دارم.
+      </p>
+
+      <div class="info">
+
+        <div>
+          <span>AGE</span><br>
+          16
+        </div>
+
+        <div>
+          <span>EXPERIENCE</span><br>
+          4+ Years
+        </div>
+
+        <div>
+          <span>ROLE</span><br>
+          Freelance Developer
+        </div>
+
+        <div>
+          <span>EDUCATION</span><br>
+          Diploma
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= SKILLS ================= -->
+
+<section id="skills">
+
+  <div class="section-title">
+
+    <div class="section-label">
+      02 / SKILLS
+    </div>
+
+    <h2>مهارت‌ها</h2>
+
+  </div>
+
+  <div class="skills">
+
+    <div class="glass card skill">
+      <div class="skill-icon">🌐</div>
+      <h3>HTML</h3>
+      <p>ساختار و توسعه صفحات وب</p>
+    </div>
+
+    <div class="glass card skill">
+      <div class="skill-icon">🎨</div>
+      <h3>CSS</h3>
+      <p>طراحی رابط کاربری و انیمیشن</p>
+    </div>
+
+    <div class="glass card skill">
+      <div class="skill-icon">⚡</div>
+      <h3>JAVASCRIPT</h3>
+      <p>ساخت تجربه‌های تعاملی</p>
+    </div>
+
+    <div class="glass card skill">
+      <div class="skill-icon">🐍</div>
+      <h3>PYTHON</h3>
+      <p>برنامه‌نویسی و توسعه</p>
+    </div>
+
+    <div class="glass card skill">
+      <div class="skill-icon">🐘</div>
+      <h3>PHP</h3>
+      <p>توسعه سمت سرور</p>
+    </div>
+
+    <div class="glass card skill">
+      <div class="skill-icon">🖌️</div>
+      <h3>PHOTOSHOP</h3>
+      <p>طراحی و ویرایش گرافیکی</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= PROJECTS ================= -->
+
+<section id="projects">
+
+  <div class="section-title">
+
+    <div class="section-label">
+      03 / PROJECTS
+    </div>
+
+    <h2>پروژه‌ها</h2>
+
+  </div>
+
+  <div class="projects">
+
+    <div class="glass card project">
+
+      <div class="project-number">PROJECT_01</div>
+
+      <div class="project-orb"></div>
+
+      <h3>پروژه اول</h3>
+
+      <p>
+        پروژه خودت را اینجا معرفی کن.
+        لینک پروژه را نیز می‌توانی اضافه کنی.
+      </p>
+
+    </div>
+
+
+    <div class="glass card project">
+
+      <div class="project-number">PROJECT_02</div>
+
+      <div class="project-orb"></div>
+
+      <h3>پروژه دوم</h3>
+
+      <p>
+        توضیحات پروژه دوم را اینجا قرار بده.
+      </p>
+
+    </div>
+
+
+    <div class="glass card project">
+
+      <div class="project-number">PROJECT_03</div>
+
+      <div class="project-orb"></div>
+
+      <h3>پروژه سوم</h3>
+
+      <p>
+        پروژه بعدی خودت را اینجا قرار بده.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= CONTACT ================= -->
+
+<section id="contact">
+
+  <div class="glass card contact">
+
+    <div class="section-label">
+      04 / CONTACT
+    </div>
+
+    <h2>
+      Let's Build
+      <span>Something.</span>
+    </h2>
+
+    <p>
+      برای همکاری روی پروژه‌های جذاب آماده‌ام.
+    </p>
+
+    <!-- لینک خودت را اینجا قرار بده -->
+    <a
+      class="btn btn-primary"
+      href="#"
+      onclick="return false;"
+    >
+      CONTACT ME
+    </a>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+  Designed & Built by
+  <strong>Mohammadrezapy</strong>
+  · 2026
+</footer>
+
+
+<!-- ================= THREE.JS ================= -->
+
+<script type="module">
+
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+
+const container = document.getElementById("space");
+
+
+/* Scene */
+
+const scene = new THREE.Scene();
+
+
+/* Camera */
+
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  .1,
+  1000
+);
+
+camera.position.z = 7;
+
+
+/* Renderer */
+
+const renderer = new THREE.WebGLRenderer({
+  alpha:true,
+  antialias:true
+});
+
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio,2)
+);
+
+renderer.setSize(
+  window.innerWidth,
+  window.innerHeight
+);
+
+container.appendChild(renderer.domElement);
+
+
+/* ================= PLANET ================= */
+
+const planetGeometry =
+  new THREE.IcosahedronGeometry(2.15,2);
+
+const planetMaterial =
+  new THREE.MeshBasicMaterial({
+    color:0x00ffe1,
+    wireframe:true,
+    transparent:true,
+    opacity:.22
+  });
+
+const planet =
+  new THREE.Mesh(
+    planetGeometry,
+    planetMaterial
+  );
+
+scene.add(planet);
+
+
+/* Inner sphere */
+
+const innerGeometry =
+  new THREE.IcosahedronGeometry(1.95,2);
+
+const innerMaterial =
+  new THREE.MeshBasicMaterial({
+    color:0x02080c,
+    transparent:true,
+    opacity:.95
+  });
+
+const inner =
+  new THREE.Mesh(
+    innerGeometry,
+    innerMaterial
+  );
+
+scene.add(inner);
+
+
+/* ================= RINGS ================= */
+
+function createRing(
+  radius,
+  rotation,
+  color
+){
+
+  const geometry =
+    new THREE.TorusGeometry(
+      radius,
+      .012,
+      8,
+      160
+    );
+
+  const material =
+    new THREE.MeshBasicMaterial({
+      color,
+      transparent:true,
+      opacity:.6
+    });
+
+  const ring =
+    new THREE.Mesh(
+      geometry,
+      material
+    );
+
+  ring.rotation.set(
+    rotation.x,
+    rotation.y,
+    rotation.z
+  );
+
+  scene.add(ring);
+
+  return ring;
+}
+
+
+const ring1 =
+  createRing(
+    2.65,
+    {x:.5,y:.2,z:.3},
+    0x00ffe1
+  );
+
+const ring2 =
+  createRing(
+    2.85,
+    {x:-.3,y:.7,z:-.2},
+    0x8b5cf6
+  );
+
+const ring3 =
+  createRing(
+    3.05,
+    {x:1.1,y:.2,z:.5},
+    0x00aaff
+  );
+
+
+/* ================= STARS ================= */
+
+const starsGeometry =
+  new THREE.BufferGeometry();
+
+const count = 1600;
+
+const positions =
+  new Float32Array(count * 3);
+
+for(let i=0;i<count;i++){
+
+  positions[i*3] =
+    (Math.random()-.5)*30;
+
+  positions[i*3+1] =
+    (Math.random()-.5)*22;
+
+  positions[i*3+2] =
+    (Math.random()-.5)*25;
+}
+
+starsGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(
+    positions,
+    3
+  )
+);
+
+const starsMaterial =
+  new THREE.PointsMaterial({
+    color:0x00ffe1,
+    size:.025,
+    transparent:true,
+    opacity:.7
+  });
+
+const stars =
+  new THREE.Points(
+    starsGeometry,
+    starsMaterial
+  );
+
+scene.add(stars);
+
+
+/* ================= MOUSE ================= */
+
+let mouseX=0;
+let mouseY=0;
+
+let targetX=0;
+let targetY=0;
+
+document.addEventListener(
+  "mousemove",
+  e=>{
+
+    mouseX =
+      (e.clientX/window.innerWidth)*2-1;
+
+    mouseY =
+      -(e.clientY/window.innerHeight)*2+1;
+
+  }
+);
+
+
+/* ================= ANIMATION ================= */
+
+const clock =
+  new THREE.Clock();
+
+function animate(){
+
+  requestAnimationFrame(animate);
+
+  const time =
+    clock.getElapsedTime();
+
+
+  targetX +=
+    (mouseX*.55-targetX)*.025;
+
+  targetY +=
+    (mouseY*.55-targetY)*.025;
+
+
+  planet.rotation.x =
+    time*.09+targetY;
+
+  planet.rotation.y =
+    time*.14+targetX;
+
+
+  inner.rotation.x =
+    -time*.05;
+
+  inner.rotation.y =
+    -time*.09;
+
+
+  ring1.rotation.z =
+    time*.18;
+
+  ring2.rotation.x =
+    time*.13;
+
+  ring3.rotation.y =
+    time*.1;
+
+
+  stars.rotation.y =
+    time*.008;
+
+
+  camera.position.x +=
+    (targetX*.35-camera.position.x)*.02;
+
+  camera.position.y +=
+    (targetY*.2-camera.position.y)*.02;
+
+  camera.lookAt(
+    scene.position
+  );
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+
+}
+
+animate();
+
+
+/* ================= RESIZE ================= */
+
+window.addEventListener(
+  "resize",
+  ()=>{
+
+    camera.aspect =
+      window.innerWidth /
+      window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    );
+
+  }
+);
+
+</script>
+
+
+<!-- ================= CURSOR ================= -->
+
+<script>
+
+const cursor =
+  document.querySelector(".cursor");
+
+const ring =
+  document.querySelector(".cursor-ring");
+
+let cx=0;
+let cy=0;
+
+let rx=0;
+let ry=0;
+
+document.addEventListener(
+  "mousemove",
+  e=>{
+
+    cx=e.clientX;
+    cy=e.clientY;
+
+  }
+);
+
+function cursorAnimation(){
+
+  rx += (cx-rx)*.15;
+  ry += (cy-ry)*.15;
+
+  cursor.style.left=cx+"px";
+  cursor.style.top=cy+"px";
+
+  ring.style.left=rx+"px";
+  ring.style.top=ry+"px";
+
+  requestAnimationFrame(cursorAnimation);
+
+}
+
+cursorAnimation();
+
+
+document
+.querySelectorAll("a,.card")
+.forEach(el=>{
+
+  el.addEventListener(
+    "mouseenter",
+    ()=>{
+      ring.style.width="60px";
+      ring.style.height="60px";
+    }
+  );
+
+  el.addEventListener(
+    "mouseleave",
+    ()=>{
+      ring.style.width="38px";
+      ring.style.height="38px";
+    }
+  );
+
+});
+
+</script>
+
+</body>
+</html>
+```
